@@ -5,7 +5,32 @@ let n_left = { data <= 12; left <= 0; right <= 0}    (* 0 in head signals null *
 in let n_right = { data <= 44; left <= 0; right <= 0}
 in let n_root = { data <= 33; left <= n_left ; right <= n_right }
 in let t1 = { root <= n_root ; length <= 3} 
-in let add_bt = (* complete *)
+in letrec add_bt_helper(nd) = 
+proc(num) {
+  if number?(nd)
+  then 0
+  else (
+    if(num<<nd.data)
+    then (
+      if number?(nd.left)
+      then nd.left<= {data <= num; left <= 0; right <= 0}
+      else ((add_bt_helper nd.left) num)
+    )
+    else (
+      if(num >> nd.data)
+      then(
+        if number?(nd.right)
+        then nd.right<={data <= num; left <= 0; right <= 0}
+        else ((add_bt_helper nd.right)num)
+      )
+      else(
+        0
+      )
+    )
+  )
+}
+
+in let add_bt = proc(t){proc(num){ ((add_bt_helper t.root) num)}}
 in begin
      ((add_bt t1) 23);
      t1.length <= t1.length+1;
