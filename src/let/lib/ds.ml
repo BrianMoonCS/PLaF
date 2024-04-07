@@ -1,3 +1,10 @@
+(* 
+Names: Brian Moon, Adib Osmany   
+Pledge: I pledge my honor that I have abided by the Stevens Honor System
+File: ds.ml
+*)
+
+
 (* This file defines expressed values and environments *)
 
 (* expressed values and environments are defined mutually recursively *)
@@ -8,6 +15,7 @@ type exp_val =
   | BoolVal of bool
   | PairVal of exp_val*exp_val
   | TupleVal of exp_val list
+  | ListVal of exp_val listz
 type env =
   | EmptyEnv
   | ExtendEnv of string*exp_val*env
@@ -106,14 +114,18 @@ let list_of_tupleVal : exp_val -> (exp_val list)  ea_result =  function
 let pair_of_pairVal : exp_val -> (exp_val*exp_val) ea_result =  function
   |  PairVal(ev1,ev2) -> return (ev1,ev2)
   | _ -> error "Expected a pair!"
-           
+
+let list_of_listVal : exp_val -> (exp_val list)  ea_result =  function
+  |  ListVal l -> return l
+  | _ -> error "Expected a List!"
+          
 let rec string_of_expval = function
   | NumVal n -> "NumVal " ^ string_of_int n
   | BoolVal b -> "BoolVal " ^ string_of_bool b
   | PairVal (ev1,ev2) -> "PairVal("^string_of_expval ev1
                          ^","^ string_of_expval ev2^")"
   | TupleVal evs -> "TupleVal("^String.concat "," (List.map string_of_expval evs)^")"
-
+  | ListVal evs -> "ListVal("^String.concat "," (List.map string_of_expval evs)^")"
 let rec string_of_env' ac = function
   | EmptyEnv ->  "["^String.concat ",\n" ac^"]"
   | ExtendEnv(id,v,env) -> string_of_env' ((id^":="^string_of_expval v)::ac) env

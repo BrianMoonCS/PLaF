@@ -1,3 +1,10 @@
+(* 
+Names: Brian Moon, Adib Osmany   
+Pledge: I pledge my honor that I have abided by the Stevens Honor System
+File: interp.ml
+*)
+
+
 open Parser_plaf.Ast
 open Parser_plaf.Parser
 open Ds
@@ -66,7 +73,60 @@ let rec eval_expr : expr -> exp_val ea_result =
     string_of_env >>= fun str ->
     print_endline str; 
     error "Debug called"
+
+  | Cons (e1 , e2 ) ->
+    eval_expr e1 >>= fun ev1 ->
+      eval_expr e2 >>= 
+      list_of_listVal >>= fun ev2 ->
+      return (ListVal(ev1::ev2))
+
+  | IsEmpty ( e) ->
+    eval_expr e >>=
+    list_of_listVal >>= fun n ->
+      return (BoolVal(List.length n=0))
+
+  | Hd (e ) -> 
+    eval_expr e >>=
+    list_of_listVal >>= fun n ->
+      (match n with
+      | [] -> error "List is Empty!"
+      | h::_ -> return h)
+
+  | Tl (e ) -> 
+    eval_expr e >>=
+    list_of_listVal >>= fun n->
+      (match n with
+      | [] -> error "List is Empty!"
+      | _::t -> return (ListVal(t)))
+
+  | EmptyList ( _t ) ->
+    return (ListVal([])) 
+
+  
+
+  | Tuple ( es ) -> 
+    eval_exprs es >>= fun n ->
+      return (TupleVal(n))
+  | Untuple ( ids , e1 , e2 ) -> 
+    eval_expr e1 >>=
+    list_of_tupleVal >>= fun n ->
+      if List.length   ids <> List.length n
+      then error "extend_env_list: Arguments do not match parameters!"
+      else extend_env_list ids n >>+
+      eval_expr e2
   | _ -> failwith "Not implemented yet!"
+  and
+    eval_exprs : expr list -> ( exp_val list ) ea_result =  
+    fun es ->
+      match es with
+      | [] -> return []
+      | h :: t -> eval_expr h >>= fun i ->
+      eval_exprs t >>= fun l ->
+      return (i :: l)
+  
+ 
+
+    
 
 (** [eval_prog e] evaluates program [e] *)
 let eval_prog (AProg(_,e)) =

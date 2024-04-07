@@ -1,0 +1,47 @@
+# dune utop
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Shared cache location: /home/ubuntu/.cache/dune/db
+# Workspace root: /home/ubuntu/PLaF/src/let
+# Auto-detected concurrency: 8
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; installed_env =
+#      map
+#        { "INSIDE_DUNE" : "/home/ubuntu/PLaF/src/let/_build/default"
+#        ; "OCAML_COLOR" : "always"
+#        ; "OPAMCOLOR" : "always"
+#        }
+#  ; instrument_with = []
+#  }
+$ /home/ubuntu/.opam/default/bin/ocamlc.opt -config > /tmp/dune_0c42d8_output
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamldep.opt -modules -impl lib/ds.ml) > _build/default/lib/.let.objs/let__Ds.impl.d
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I lib/.let.objs/byte -I /home/ubuntu/.opam/default/lib/menhirLib -I /home/ubuntu/.opam/default/lib/parser_plaf -no-alias-deps -opaque -open Let -o lib/.let.objs/byte/let__Ds.cmo -c -impl lib/ds.ml)
+> File "lib/ds.ml", lines 127-133, characters 27-83:
+> 127 | ...........................function
+> 128 |   | NumVal n -> "NumVal " ^ string_of_int n
+> 129 |   | BoolVal b -> "BoolVal " ^ string_of_bool b
+> 130 |   | PairVal (ev1,ev2) -> "PairVal("^string_of_expval ev1
+> 131 |                          ^","^ string_of_expval ev2^")"
+> 132 |   | TupleVal evs -> "TupleVal("^String.concat "," (List.map string_of_expval evs)^")"
+> 133 |   | ListVal evs -> "ListVal("^String.concat "," (List.map string_of_expval evs)^")"
+> Warning 8 [partial-match]: this pattern-matching is not exhaustive.
+> Here is an example of a case that is not matched:
+> ProcVal (_, _, _)
+>
+> File "lib/ds.ml", line 13, characters 0-23:
+> 13 | open Parser_plaf.Parser
+>      ^^^^^^^^^^^^^^^^^^^^^^^
+> Warning 33 [unused-open]: unused open Parser_plaf.Parser.
+$ (cd _build/default && /home/ubuntu/.opam/default/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -warn-error -A -g -bin-annot -I lib/.let.objs/byte -I /home/ubuntu/.opam/default/lib/menhirLib -I /home/ubuntu/.opam/default/lib/parser_plaf -no-alias-deps -opaque -open Let -o lib/.let.objs/byte/let__Interp.cmo -c -impl lib/interp.ml)
+> File "lib/interp.ml", line 117, characters 4-14:
+> 117 |   | Proc(id,e) ->
+>           ^^^^^^^^^^
+> Error: The constructor Proc expects 3 argument(s),
+>        but is applied here to 2 argument(s)
+[2]
