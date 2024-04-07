@@ -25,6 +25,6 @@ Clflags.include_dirs :=
   ; "/home/ubuntu/.opam/default/lib/uutf"
   ; "/home/ubuntu/.opam/default/lib/xdg"
   ; "/home/ubuntu/.opam/default/lib/zed"
-  ; "/home/ubuntu/PLaF/src/explicit-refs/_build/default/lib/.explicit_refs.objs/byte"
+  ; "/home/ubuntu/PLaF/src/explicit-refs-mf/_build/default/lib/.explicit_refs.objs/byte"
   ];
 UTop_main.main ();
