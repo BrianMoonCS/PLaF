@@ -1,3 +1,5 @@
+(* Names: Adib Osmany, Brian Moon
+   Pledge: I pledge my honor that I have abided by the Stevens Honor System*)
 open ReM
 open Dst
 open Parser_plaf.Ast
@@ -50,8 +52,75 @@ let rec chk_expr : expr -> texpr tea_result = function
      if t=tRes 
      then chk_expr target
      else error
-         "LetRec: Type of recursive function does not match
-declaration")
+         "LetRec: Type of recursive function does not match declaration")
+
+
+  (* Task 1 *)
+  | NewRef(e) -> 
+    chk_expr e >>= fun t ->
+    return @@ RefType(t) 
+  | DeRef(e) -> 
+    chk_expr e >>= ref_of_refType "deref: " >>= fun t ->
+    return t
+  | SetRef(e1,e2) -> 
+    chk_expr e1 >>= ref_of_refType "setref: " >>= fun t1 ->
+    chk_expr e2 >>= fun t2 ->
+    if t1=t2
+    then return UnitType
+    else error "setref: type of e1 and e2 do not match"
+  | BeginEnd([]) -> return UnitType
+  | BeginEnd(es) -> 
+    List.fold_left (fun _ e -> chk_expr e) (return UnitType) es
+
+(* Task 2 *)
+  | EmptyList(Some t) -> 
+    return @@ ListType(t)
+  | EmptyList(None) ->
+    error "emptyList: Type is Required"
+  | Cons(e1,e2) ->     
+    chk_expr e1 >>= fun t1 ->
+    chk_expr e2 >>= list_of_listType "cons: " >>= fun t2 ->
+    if t1=t2
+    then return @@ ListType(t1)
+    else error "cons: type of head and tail do not match"
+  | IsEmpty(e) -> 
+    chk_expr e >>= fun n ->
+    (match n with
+    | ListType l -> return BoolType
+    | TreeType t -> return BoolType
+    | _ -> error "Empty?: Expected a List or Tree type")
+  | Hd(e) -> 
+    chk_expr e >>= list_of_listType "Hd: " >>= fun t ->
+    return t
+  | Tl(e) ->     
+    chk_expr e >>= list_of_listType "TL: " >>= fun t ->
+    return @@ ListType(t)
+
+
+
+  (* Task 3 *)
+  | EmptyTree(Some t) -> 
+    return @@ TreeType(t)
+  | EmptyTree(None) ->
+    error "emptyTree: Type is Required"
+  | Node(de, le, re) -> 
+    chk_expr de >>= fun d ->
+    chk_expr le >>= tree_of_TreeType "le:">>= fun left ->
+    chk_expr re >>= tree_of_TreeType "re:">>= fun right ->
+    if (d=left && d=right)
+      then return @@ TreeType(d)
+      else error "node: types do not match"
+
+  | CaseT (target, emptycase, id1, id2, id3, nodecase) -> chk_expr target >>= fun targ ->
+    (match targ with
+      | TreeType t -> chk_expr emptycase >>= fun e -> 
+        (extend_tenv id1 t) >>+ (extend_tenv id2 (TreeType t)) >>+ (extend_tenv id3 (TreeType t)) >>+ chk_expr nodecase >>= fun n ->
+        if e=n
+        then return e
+        else error "CaseT: types do not match"
+      | _ -> error "CaseT: target must be a tree")
+        
+
   | Debug(_e) ->
     string_of_tenv >>= fun str ->
     print_endline str;

@@ -132,15 +132,15 @@ let rec eval_expr : expr -> exp_val ea_result = fun e ->
     (match List.assoc_opt id fs with
     | Some (true, v) -> int_of_refVal v >>= Store.deref g_store
     | Some (false, v) -> return v
-    | None -> error ("Field '" ^ id ^ "' not found in record"))
+    | None -> error ("Field not found"))
   | SetField (e1,id,e2) ->
     eval_expr e1 >>=
     fields_of_recordVal >>= fun fs ->
     eval_expr e2 >>= fun newval ->
     (match List.assoc_opt id fs with
     | Some (true,v) -> int_of_refVal v >>= fun i -> Store.set_ref g_store i newval >>= fun _ -> return UnitVal
-    | Some (false,_) -> error ("Field '" ^ id ^ "' is not mutable")
-    | None -> error ("Field '" ^ id ^ "' not found in record")
+    | Some (false,_) -> error ("Field not mutable")
+    | None -> error ("Field not found")
     )
 
     

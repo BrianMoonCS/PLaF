@@ -58,3 +58,15 @@ let rec  string_of_tenv'  = function
 let string_of_tenv =
   fun tenv ->
   Ok (string_of_tenv' tenv)
+
+let ref_of_refType s = function
+  | RefType r -> return r
+  | _ -> error @@ s^"Expected a reference type"
+
+let list_of_listType s = function
+  | ListType l -> return l
+  | _ -> error @@ s^"Expected a list type"
+
+let tree_of_TreeType s = function
+  | TreeType t -> return t
+  | _ -> error @@ s^"Expected a tree type"
